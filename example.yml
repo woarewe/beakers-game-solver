@@ -1,0 +1,14 @@
+capacity: 5
+beakers:
+  - 
+    - "orange"
+    - "blue"
+    - "orange"
+    - "blue"
+  -
+    - "blue"
+    - "orange"
+    - "blue"
+    - "orange"
+  - []
+    
