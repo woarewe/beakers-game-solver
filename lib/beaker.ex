@@ -66,7 +66,6 @@ defmodule Beaker do
             {:ok, portion_for_second, portion_for_first} = Portion.separate(portion, available_volume)
             case pour_in(second, portion_for_second) do
               {:ok, filled_second} ->
-              # require IEx; IEx.pry
                 {:ok, restored_first} = pour_in(emptied_first, portion_for_first)
                 {:ok, restored_first, filled_second}
               {:error, reason} -> {:error, reason}
