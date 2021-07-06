@@ -6,6 +6,14 @@ defmodule Beaker do
     %__MODULE__{capacity: capacity, portions: portions}
   end
 
+  def complete?(%__MODULE__{portions: portions, capacity: capacity}) do
+    case portions do
+      [portion] -> Portion.get_size(portion) == capacity
+      [] -> true
+      _ -> false
+    end
+  end
+
   def pour_in(beaker, portion) do
     if can_be_poured_in?(beaker, portion) do
       case pour_out(beaker) do

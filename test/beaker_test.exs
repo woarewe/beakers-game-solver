@@ -97,4 +97,40 @@ defmodule BeakerTest do
     assert %Beaker{capacity: 3, portions: [%Portion{color: "red", size: 1}]} = emptied_first
     assert %Beaker{capacity: 3, portions: [%Portion{color: "red", size: 3}]} = filled_second
   end
+
+  test "complete if no portions" do
+    beaker = %Beaker{
+      capacity: 5,
+      portions: []
+    }
+
+    assert Beaker.complete?(beaker) == true
+  end
+
+  test "complete if portion size is equal to capacity" do
+    beaker = %Beaker{
+      capacity: 5,
+      portions: [%Portion{color: "red", size: 5}]
+    }
+
+    assert Beaker.complete?(beaker) == true
+  end
+
+  test "not complete if portion size is lest than capacity" do
+    beaker = %Beaker{
+      capacity: 5,
+      portions: [%Portion{color: "red", size: 3}]
+    }
+
+    assert Beaker.complete?(beaker) == false
+  end
+
+  test "not complete if rainbow" do
+    beaker = %Beaker{
+      capacity: 5,
+      portions: [%Portion{color: "red", size: 3}, %Portion{color: "blue", size: 2}]
+    }
+
+    assert Beaker.complete?(beaker) == false
+  end
 end
