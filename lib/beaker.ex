@@ -26,13 +26,34 @@ defmodule Beaker do
     end
   end
 
-  def pour_out(%__MODULE__{portions: portions} = beaker) do
-    if empty?(beaker) do
-      {:error, :empty}
-    else
-      [portion | tail] = portions
-      {:ok, portion, %__MODULE__{beaker | portions: tail}}
+  def pour_out(%__MODULE__{portions: portions} = beaker, required_size) do
+    case portions do
+      [%{size: size} = portion | tail] ->
+        cond do
+          required_size > size -> {:error, :empty}
+          required_size == size -> {:ok, portion, %__MODULE__{beaker | portions: tail}}
+          required_size < size ->
+            {:ok, required_portion, left_portion} = Portion.separate(portion, required_size)
+            {
+              :ok,
+              required_portion,
+              %__MODULE__{beaker | portions: [left_portion | tail]}
+            }
+        end
+      [] -> {:error, :empty}
     end
+  end
+
+  def pour_out(%__MODULE__{portions: portions} = beaker) do
+    case portions do
+      [%{size: size} = _portion | _tail] ->
+        pour_out(beaker, size)
+      [] -> {:error, :empty}
+    end
+  end
+
+  def last_portion(%__MODULE__{portions: portions}) do
+    List.last(portions)
   end
 
   def available_volume(%__MODULE__{capacity: capacity, portions: portions}) do
@@ -60,26 +81,27 @@ defmodule Beaker do
 
   def pour_over(first, second) do
     available_volume = available_volume(second)
-
     if available_volume > 0 do
-      case pour_out(first) do
-        {:ok, portion, emptied_first} ->
+      case last_portion(first) do
+        nil -> {:error, :empty}
+        portion ->
           portion_size = Portion.get_size(portion)
           if available_volume >= portion_size do
-            case pour_in(second, portion) do
-              {:ok, filled_second} -> {:ok, emptied_first, filled_second}
+            case pour_out(first, portion_size) do
+              {:ok, portion, emptied_first} -> 
+                case pour_in(second, portion) do
+                  {:ok, filled_second} -> {:ok, emptied_first, filled_second}
+                  {:error, reason} -> {:error, reason}
+                end
               {:error, reason} -> {:error, reason}
             end
           else
-            {:ok, portion_for_second, portion_for_first} = Portion.separate(portion, available_volume)
+            {:ok, portion_for_second, emptied_first} = Beaker.pour_out(first, available_volume)
             case pour_in(second, portion_for_second) do
-              {:ok, filled_second} ->
-                {:ok, restored_first} = pour_in(emptied_first, portion_for_first)
-                {:ok, restored_first, filled_second}
+              {:ok, filled_second} -> {:ok, emptied_first, filled_second}
               {:error, reason} -> {:error, reason}
             end
           end
-        {:error, reason} -> {:error, reason}
       end
     else
       {:error, :not_enough_volume}

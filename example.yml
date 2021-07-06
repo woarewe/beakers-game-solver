@@ -2,29 +2,66 @@ capacity: 4
 beakers:
   -
     -
-      color: "orange"
+      color: pink
       size: 1
     -
-      color: "blue"
+      color: blue
       size: 1
     -
-      color: "orange"
+      color: orange
       size: 1
     -
-      color: "blue"
+      color: green
       size: 1
   -
     -
-      color: "blue"
+      color: pink
       size: 1
     -
-      color: "orange"
+      color: blue
       size: 1
     -
-      color: "blue"
+      color: green
+      size: 1
+    -
+      color: orange
+      size: 1
+  -
+    -
+      color: red
+      size: 1
+    -
+      color: orange
+      size: 1
+    -
+      color: red
       size: 1
     - 
-      color: "orange"
+      color: pink
       size: 1
+  -
+    -
+      color: blue
+      size: 1
+    -
+      color: red
+      size: 1
+    -
+      color: pink
+      size: 1
+    - 
+      color: orange
+      size: 1
+  -
+    -
+      color: blue
+      size: 1
+    -
+      color: red
+      size: 1
+    -
+      color: green
+      size: 2
+  - []
   - []
     
